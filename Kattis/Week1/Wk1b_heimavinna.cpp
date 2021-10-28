@@ -8,6 +8,9 @@ using namespace std;
 using s_size = string::size_type;
 
 int process_ranged_string(const string &s) {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
     int sum = 0;
 
     s_size tmpStart = 0, tmpEnd = 0;

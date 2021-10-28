@@ -28,6 +28,9 @@ int process_ranged_string(const string &s) {
 }
 
 int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
     string str;
     getline(cin, str);
 
