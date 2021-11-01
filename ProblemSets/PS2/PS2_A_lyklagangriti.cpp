@@ -25,10 +25,9 @@ int main() {
         } else if (c == 'R') {
             ++it;
         } else if (c == 'B') {
-            auto backup = it;
-            --it;
-            l.erase(it);
-            it = backup;
+            auto tmp = it;
+            --tmp;
+            l.erase(tmp);
         } else {
             l.insert(it, c);
         }
