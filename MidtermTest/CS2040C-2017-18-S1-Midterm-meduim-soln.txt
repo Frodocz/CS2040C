@@ -1,0 +1,230 @@
+2017-18-S1-Midterm-meduim (95/100)
+Section A --> 8/10
+1. O(n)
+2. O(1)
+3. O(1)
+4. O(n)
+5. O(n)
+6. O(n)
+7. O(n) ---> wrong, should be O(1) as we have the tail node in list
+8. O(1)
+9. O(log n) --> wrong, should be O(n log n), it's extracting minimum not maximum
+10. O(n)
+
+Section B
+1. O(n)
+i = n, j = 1 --> n/n = 1 --> 1
+i = n - 1, j = 1 --> n/n-i = n
+i = n - 2, j = 1 --> n/n-i = n / 2
+i = n - 3, j = 1 --> n/n-i = n / 3
+...
+i = 2 = n - (n - 2). j = 1 --> n/(n - 2)
+i = 1, j = 1 --> n/n-i = n / (n - 1)
+1 + n + n/2 + n/3 + n/4 + ... + n/n-2 + n/n-1
+--> O(n*(1 + 1/2 + 1/3 + ... + 1/n)) harmonic series --> log n
+--> O(n log n) 
+
+1 + n * (1 + 1/2 + 1/3 + ... + 1/n-1) = O(n) --> wrong, should be O(nlogn)
+
+2. Suppose the numbers are in a small range, we can use range sort; if numbers are of same length, we can use radix sort, both O(n)
+3. Wrong. If we keep insert/delete to the head of linked list, it's of same time complexity as the vector push_back/ppo_back operatioon.
+4. Yes. If we maintain the tail node as well, it's always easy to do enqueue and dequeue in O(1), while dequeue in vector used O(n)
+5. Wrong, we only make sure the parent is always bigger than its children. The least one can be in the leaf, but not guaranteed to be the rightmost leaf.
+
+Section C
+1. Anagram Checker
+#include <bits/stdc++.h> // use unordered_map for count
+using namespace std;
+typedef long long ll;
+int main() {
+    string A, B;
+    cin >> A >> B;
+    // sample test cases:
+    // A = "IVLE"; B = "EVIL"; // should answer "Yes"
+    // A = "IVLE"; B = "LIFE"; // should answer "No"
+
+    unordered_map<char, ll> map;
+    for (auto c : A) {
+        if (map.find(c) != map.end()) {
+            ++map[c];
+        } else {
+            map[c] = 1;
+        }
+    }
+
+    bool isAnagram = true;
+    for (auto c : B) {
+        if (map.find(c) == map.end() || map[c] == 0) {
+            isAnagram = false;
+            break;
+        } else {
+            --map[c];
+        }
+    }
+    if (isAnagram)
+        cout << "Yes";
+    else
+        cout << "No";
+    return 0;
+}
+
+2. Linked List Partition
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+using namespace std;
+class SLL {
+    struct Vertex {
+        int item;
+        Vertex *next;
+    };
+private:
+    Vertex *head, *tail;
+public:
+    SLL() {
+        head = tail = NULL;
+    }
+
+    void InsertAtHead(int value) {
+        Vertex *vtx = new Vertex();
+        vtx->item = value;
+        vtx->next = head;
+        if (head == NULL) tail = vtx; // first insertion
+        head = vtx;
+    }
+    void InsertAfterTail(int value) {
+        if (head == NULL)
+            InsertAtHead(value); // special case
+        else {
+            Vertex *vtx = new Vertex();
+            vtx->item = value;
+            tail->next = vtx;
+            tail = vtx;
+        }
+    }
+    void PrintList() {
+        for (Vertex *vtx = head; vtx != NULL; vtx = vtx->next)
+            cout << vtx->item << " ";
+        cout << endl;
+    }
+    SLL Partition() {
+        SLL result; // do the required operations here
+        int pivot = head->item;
+        result.InsertAtHead(pivot);
+
+        Vertex *curr = head->next;
+        while (curr != NULL) {
+            if (curr->item <= pivot) {
+                result.InsertAtHead(curr->item);
+            } else {
+                result.InsertAfterTail(curr->item);
+            }
+            curr = curr->next;
+        }
+        return result;
+    }
+};
+int main() {
+    SLL L, Lmod;
+    L.InsertAfterTail(5); L.InsertAfterTail(8); L.InsertAfterTail(6);
+    L.InsertAfterTail(1); L.InsertAfterTail(7); L.InsertAfterTail(2);
+    Lmod = L.Partition();
+    L.PrintList(); // should remain 5->8->6->1->7->2
+    Lmod.PrintList(); // [smaller than 5] -> 5 -> [bigger than 5]
+    return 0;
+}
+
+3. Stack with ‘findMax()’ Operation
+#include <bits/stdc++.h> // #include <stack>
+using namespace std;
+class StackRememberMax {
+private:
+	stack<int> s1; // main stack
+	stack<int> s2; // curMax, always maintain the current max value at top
+public:
+	StackRememberMax() {
+
+	}
+
+	void push(int value) { // put value at the top of Stack
+		s1.push(value);
+		if (s2.empty()) {
+			s2.push(value);
+		} else if (value >= s2.top()) {
+			s2.push(value);
+		}
+	}
+
+	int top() { // return the current top integer of Stack
+		if (s1.empty()) return -1;
+	}
+
+	int pop() { // pop the topmost integer from the stack
+		if (s1.empty()) return -1;
+		int res = s1.top();
+		if (res == s2.top()) {
+			s2.pop();
+		}
+		s1.pop();
+		return res;
+	}
+
+	int findMax() { // report the max integer currently in this stack
+		if (s1.empty()) return -1;
+		return s2.top();
+	}
+};
+int main() {
+	StackRememberMax S;
+	cout << S.findMax() << endl; // should be -1
+	S.push(2); S.push(7); S.push(1);
+	S.push(6); S.push(8); S.push(5);
+	cout << S.top() << endl; // should be 5
+	cout << S.findMax() << endl; // should be 8
+	S.pop(); // pop 5 out
+	cout << S.top() << endl; // should be 8 now
+	cout << S.findMax() << endl; // should still be 8
+	S.pop(); // pop 8 out
+	cout << S.top() << endl; // should be 6 now
+	cout << S.findMax() << endl; // should now be 7
+}
+
+Section D
+#include <bits/stdc++.h>
+using namespace std;
+int main() {
+	list<int> l;
+	int n; cin >> n;
+	while (n--) {
+		int val; cin >> val;
+		l.push_back(val);
+	}
+	string cmd;
+	cin >> cmd;
+
+	bool isReversed = false;
+	for (auto c : cmd) {
+		if (c == 'R') {
+			// reverse, actually just note the status using isReversed
+			isReversed = !isReversed;
+		} else if (c == 'D') {
+			if (isReversed) {
+				l.pop_back();
+			} else {
+				l.pop_front();
+			}
+		}
+	}
+
+	if (isReversed) {
+		for (auto it = l.rbegin(); it != l.rend(); ++it) {
+			cout << *it << " "; 
+		}
+	} else {
+		for (auto it = l.begin(); it != l.end(); ++it) {
+			cout << *it << " "; 
+		}
+	}
+
+	return 0;
+}
