@@ -1,0 +1,104 @@
+CS2040C-2018-19-S1-midterm-medium-soln.txt
+Section A
+1. O(1)
+2. O(N)
+3. O(N)
+4. O(N^2)
+5. O(N log N)
+6. O(N)
+7. O(1)
+8. O(N)
+9. O(N)
+10. O(1)
+
+Section B
+1. Yes, the compiler will automatically create one if not defined;
+2. No, insertion sort/Buubble sort is stable and in-places;
+3. No, in reality, we can only merge 2 parts in O(N) time. Merging N parts will take O(N log N).
+4. No, for almost sorted array, insertion sort is O(N)
+5. Yes, we can reverse the list in O(N) and then print. Or use a stack to help reverse.
+
+Section C
+1. For the best case, we want the partition to split into 2 “equal” parts. (When the pivot is the median.)
+4, 1, 3, 2, 6, 5, 7 (Last step of partition swaps the pivot into the correct position)
+
+2. Radix Sort --> 900 * 3 --> 2700, selection sort worst case --> descending order from 999 to 100
+
+3. same in reverse order palindromic (1, 2, 3, 4, 5, 4, 3, 2, 1)
+
+Section D
+1. Groupings
+(1) when K = N, all the students must be selected into the project. FindMax --> O(n), FindMin --> O(n), get (max-min) --> O(n)
+(2) Sort the students, for each pair, calculate the difference and find the minimum. Sort -> O(n log n), findMin --> O(n) --> O(n log n)
+(3) General Case: Sort the students, for each subset of K, find the minimum difference. Sort -> O(n log n), findMin --> O(K) --> O(n log n)s
+#include <bits/stdc++.h> 
+using namespace std;
+int main() {
+    int N, K;
+    cin >> N;   //N is the number of students
+    cin >> K;   //K is the number of students to be selected to form a group
+    int scores[N];   //scores is the array of student scores
+    for (int i = 0; i < N; i++) {
+        cin >> scores[i];    //scores[i] ranges from 0 to 1 billion inclusive
+    }
+
+    sort(scores, scores + N);
+    int min = scores[N - 1] - scores[0]; // maximum
+    for (int i = 0; i + K - 1 < N; ++i) {
+        if (scores[i + K - 1] - scores[i] < min) {
+            min = scores[i + K - 1] - scores[i];
+        }
+    }
+
+    cout << min;
+
+    return 0;
+} // the overall time complexity of my C++ code above is O(n log n)
+
+2. Bus Rides
+Bracket Matching
+Each person is a unique pair of ‘brackets’. 
+At the boarding station: Open Bracket
+At the alighting station: Closed Bracket
+
+#include <bits/stdc++.h> // satck, pair(in utility)
+using namespace std;
+typedef pair<int, int> pii;
+typedef pair<int, pii> passenger;
+
+int main() {
+	stack<pii> start;
+	int N, P;
+	cin >> N >> P;
+
+	vector<passenger> passengers;
+	for (int i = 0; i < P; ++i) {
+		int s, d;
+		cin >> s >> d;
+		if (s < d) {
+			cout << "No";
+			return 0;
+		}
+		passengers.push_back({i, {s, d}});
+	}
+
+	// sort(passengers.begin(), passengers.end(), [](passenger &p1, passenger &p2) { return p1.first < p2.first; });
+	bool valid = true;
+	for (auto p : passengers) {
+		if (start.empty()) {
+			start.push(p.second.first);
+		} else {
+			if (start.top() > p.second.second) {
+				valid = false;
+				break;
+			} else {
+				start.pop();
+			}
+		}
+	}
+
+	if (valid) cout << "Yes";
+	else cout << "No";
+
+	return 0;
+} // the overall time complexity of my C++ code above is O(n)
