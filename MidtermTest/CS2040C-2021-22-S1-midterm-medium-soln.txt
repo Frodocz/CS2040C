@@ -1,0 +1,91 @@
+1. Fill in the blanks
+(1). O(2N*(log N)) = O(2 * 11 * 2048) = 45056  
+(2). O(N * log N)
+(3). N
+(4). N, still same
+(5). O(N^2logN)
+
+2. Fill in the blanks
+(1) algorithm
+(2) &
+(3) begin
+(4) !=
+(5) <
+
+3. New ADT Design
+(1) Use a vector to implement it, 
+(2) call push_back(v) as the intetrnal implementation of add(v)
+(3) call size() as the internal implementation of count(), O(1)
+(4) call rand() % count() to generate the index too be returned and removed, O(1) to get the item, O(n) in worst case to remove;
+
+4. List Questions
+I'll assume I can maintain the current mid idx and the node at that idx. Then it will be only O(1) when insert new mid where the first insertion is O(N)
+However, if we need to iterate everytime from head/tail to the target, it will be O(n ^ 2)
+
+5. O(n)
+
+6. O(n log n)
+
+7. O(n ^ 2)
+
+8. Quick almost sort the array, now insertion sort will perform O(K) times for tthe last K itemss --> O(n log n)
+
+9. Fill in the blanks
+(1). O(N ^ 2)
+(2). O(N log N)
+
+10. O(N log N) + O(K ^ 2)
+
+11. One Sorting Application
+(1) 1
+(2) 3
+(3) 9
+(4) 7
+(5) N
+
+12. Coding
+#include <iostream>
+#include <algorithm> // blanks
+#include <vector>
+#include <utility>
+#include <unordered_map>
+
+using namespace std;
+typedef pair<int, int> pii;
+typedef pair<int, pii> pip;
+typedef unordered_map<int, pii> mip; // {value, {firstOccur, count}}
+
+int main() {
+    int N, K; cin >> N >> K; // 1 <= N <= 1M, 1 <= K <= N
+
+    mip map;
+    for (int i  = 0; i < N; ++i) { // O(N) here
+        int v; cin >> v;
+        if (map.find(v) != map.end()) {
+            ++map[v].second;
+        } else {
+            map[v] = {i, 1};
+        }
+    }
+
+    vector<pip> A;
+    for (auto &e : map) {
+        A.push_back({e.first, e.second});
+    }
+
+    // sort
+    sort(A.begin(), A.end(), [](pip &a, pip &b){ // {value, {firstOccur, count}}
+        if (a.second.second != b.second.second) {
+            return a.second.second > b.second.second;
+        } else {
+            return a.second.first < b.second.first;
+        }
+    });
+
+    for (auto a : A) {
+        for (auto i = 0; i < a.second.second; ++i)
+            cout << a.first << " ";
+    }
+    cout << endl;
+    return 0;
+} // the overall time complexity of my C++ code above is O(n + n2 log n2), where n2 is the number of unique numbers in n inputs

@@ -101,4 +101,4 @@ int main() {
 	else cout << "No";
 
 	return 0;
-} // the overall time complexity of my C++ code above is O(n)
+} // the overall time complexity of my C++ code above is O(n) consider to sort as we need to simulate the boarding sequence
